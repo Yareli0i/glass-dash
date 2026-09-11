@@ -16,7 +16,7 @@
 
 ## Встановлення
 
-1. Підпишіться на **Glass Dash** у Майстерні Steam — або скопіюйте теку [`wallpaper`](wallpaper) у `wallpaper_engine\projects\myprojects\`.
+1. Підпишіться на [**Glass Dash** у Майстерні Steam](https://steamcommunity.com/sharedfiles/filedetails/?id=3799717997) — або скопіюйте теку [`wallpaper`](wallpaper) у `wallpaper_engine\projects\myprojects\`.
 2. Щоб працювали кнопки, встановіть **Glass Dash Helper** (нижче). Без нього працює все, крім кнопок.
 
 ## Glass Dash Helper
@@ -71,6 +71,6 @@ A glassy anime dashboard for Wallpaper Engine: clock, calendar, now-playing musi
 - **Side dock** (Discord, Telegram, Spotify, YouTube, Steam, VS Code): opens an app, brings it to the front, or minimizes it if it already was in front.
 - **Avatar**: any picture, or your Windows account picture.
 
-**Install:** subscribe on the Steam Workshop (or copy [`wallpaper`](wallpaper) into `wallpaper_engine\projects\myprojects\`). For the buttons, get `glass-dash-helper.zip` from [Releases](https://github.com/Yareli0i/glass-dash/releases/latest), unpack it and double-click `install.cmd` (`uninstall.cmd` removes it; or run `glass-dash-helper.exe --install` / `--uninstall` from any folder). Wallpaper Engine does not let HTML wallpapers launch programs, which is why this tiny (~20 KB, windowless) helper exists. It listens on `127.0.0.1` only, answers only the wallpaper, runs nothing but the entries in `glass-dash-helper.ini` plus three media keys, and serves the account picture in a way web pages cannot read. Windows may warn about an unknown publisher because the exe is unsigned; the source is in [`helper/`](helper) and builds with [`helper/build.cmd`](helper/build.cmd).
+**Install:** subscribe on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3799717997) (or copy [`wallpaper`](wallpaper) into `wallpaper_engine\projects\myprojects\`). For the buttons, get `glass-dash-helper.zip` from [Releases](https://github.com/Yareli0i/glass-dash/releases/latest), unpack it and double-click `install.cmd` (`uninstall.cmd` removes it; or run `glass-dash-helper.exe --install` / `--uninstall` from any folder). Wallpaper Engine does not let HTML wallpapers launch programs, which is why this tiny (~20 KB, windowless) helper exists. It listens on `127.0.0.1` only, answers only the wallpaper, runs nothing but the entries in `glass-dash-helper.ini` plus three media keys, and serves the account picture in a way web pages cannot read. Windows may warn about an unknown publisher because the exe is unsigned; the source is in [`helper/`](helper) and builds with [`helper/build.cmd`](helper/build.cmd).
 
 **Credits:** code under [MIT](LICENSE); clock font JetBrains Mono (Nerd Fonts build), SIL OFL 1.1; Konata Izumi and Lucky Star © Kagami Yoshimizu / Kadokawa — unofficial fan work, character and background edited with ChatGPT; app names are trademarks of their owners.
