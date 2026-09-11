@@ -1,0 +1,29 @@
+[h1]Glass Dash[/h1]
+Скляний аніме-дашборд: годинник, календар, музика, Коната, що виходить за скло, і бічна панель-док.
+
+[h2]Що вміє[/h2]
+[list]
+[*] Годинник і календар (українська / English), привітання за часом доби з вашим ім'ям
+[*] Музика з будь-якого плеєра, який бачить Windows (Spotify, браузер…): назва, обкладинка, прогрес, ⏮ ⏯ ⏭
+[*] Матове скло, персонаж, галерея, фон і акцентний колір — у налаштуваннях шпалери
+[*] Бічна панель: Discord, Telegram, Spotify, YouTube, Steam, VS Code — відкриває програму, виводить наперед, згортає
+[*] Аватар: будь-яка картинка або фото вашого акаунта Windows
+[/list]
+
+[h2]Кнопки: Glass Dash Helper[/h2]
+Wallpaper Engine не дозволяє HTML-шпалерам запускати програми, тому кнопкам потрібен маленький безкоштовний помічник з відкритим кодом (~20 КБ, без вікна). Без нього працює все, крім кнопок.
+[list]
+[*] [url=https://github.com/Yareli0i/glass-dash/releases/latest]Завантажте glass-dash-helper.zip[/url] і розпакуйте
+[*] Двічі клацніть install.cmd — помічник запуститься й стартуватиме разом з Windows
+[*] Видалення — uninstall.cmd
+[/list]
+Windows може попередити про невідомого видавця: у програми немає цифрового підпису. Код і докладна інструкція: [url=https://github.com/Yareli0i/glass-dash]github.com/Yareli0i/glass-dash[/url]
+
+[hr][/hr]
+
+[h2]English[/h2]
+A glassy anime dashboard: clock, calendar, now playing, Konata stepping out of the glass and a side dock that opens, focuses and minimizes your apps.
+
+Everything works out of the box except the buttons. Wallpaper Engine does not let HTML wallpapers launch programs, so the buttons need the tiny open-source Glass Dash Helper: [url=https://github.com/Yareli0i/glass-dash/releases/latest]download glass-dash-helper.zip[/url], unpack it and double-click install.cmd (uninstall.cmd removes it). Source and details: [url=https://github.com/Yareli0i/glass-dash]github.com/Yareli0i/glass-dash[/url]
+
+[i]Konata Izumi / Lucky Star © Kagami Yoshimizu / Kadokawa. Unofficial fan work.[/i]

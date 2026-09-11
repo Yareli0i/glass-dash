@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glass Dash</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="bg"><img src="assets/bg/meadow-haze.jpg" alt=""></div>
+
+<button id="hide-btn" class="corner-btn" aria-label="Сховати дашборд">
+  <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+</button>
+
+<main id="stage">
+
+  <div id="glass-blur" aria-hidden="true"></div>
+
+  <nav id="rail" class="glass" aria-label="Швидкий запуск"></nav>
+
+  <section id="panel" class="glass">
+    <div class="col-left">
+      <div id="clock" aria-live="off"><span id="hh">00</span><span class="colon">:</span><span id="mm">00</span></div>
+      <div id="date"></div>
+
+      <div id="calendar">
+        <div id="cal-month"></div>
+        <div id="cal-grid"></div>
+      </div>
+    </div>
+
+    <div id="jp-name"></div>
+
+    <div class="col-right">
+      <div class="top-row">
+        <button class="icon-btn dark" data-action="terminal" aria-label="Термінал">
+          <svg viewBox="0 0 24 24"><path d="M5 8l4 4-4 4M12 16h7"/></svg>
+        </button>
+        <div id="profile">
+          <span id="profile-name"></span>
+          <span id="avatar"></span>
+        </div>
+      </div>
+
+      <h1 id="greeting"></h1>
+
+      <div id="gallery">
+        <img class="shot big" src="assets/gallery/1.jpg" alt="">
+        <img class="shot" src="assets/gallery/2.jpg" alt="">
+        <img class="shot" src="assets/gallery/3.jpg" alt="">
+      </div>
+
+      <div id="player" class="idle">
+        <div id="cover"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/></svg></div>
+        <div id="track">
+          <div id="track-title"></div>
+          <div id="track-artist"></div>
+          <div id="controls">
+            <button data-action="media-prev" aria-label="Попередній"><svg viewBox="0 0 24 24"><path class="fill" d="M7 6h2v12H7zM19 6v12l-9-6z"/></svg></button>
+            <button data-action="media-play" id="play-btn" aria-label="Пуск / пауза"><svg viewBox="0 0 24 24"><path class="fill" id="play-icon" d="M8 5.5v13l10.5-6.5z"/></svg></button>
+            <button data-action="media-next" aria-label="Наступний"><svg viewBox="0 0 24 24"><path class="fill" d="M15 6h2v12h-2zM5 6v12l9-6z"/></svg></button>
+            <span id="track-time"></span>
+          </div>
+        </div>
+        <div id="progress"><div id="progress-fill"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="character">
+    <img id="char-img" alt="" hidden>
+    <svg id="char-placeholder" viewBox="0 0 400 640" aria-hidden="true">
+      <path d="M200 40c62 0 104 48 104 112 0 44-18 80-46 100 10 14 26 24 48 30 40 12 60 48 64 100l4 258H26l4-258c4-52 24-88 64-100 22-6 38-16 48-30-28-20-46-56-46-100 0-64 42-112 104-112Z"/>
+      <text x="200" y="470">character.png</text>
+    </svg>
+  </div>
+
+</main>
+
+<div id="toast" role="status"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

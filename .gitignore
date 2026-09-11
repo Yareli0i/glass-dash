@@ -1,0 +1,12 @@
+# helper build output and the local button config it writes on first run
+helper/*.exe
+helper/*.ini
+
+# python tools
+tools/.venv/
+__pycache__/
+
+*.log
+
+# temporary diagnostics used while developing inside Wallpaper Engine
+wallpaper/probe.js

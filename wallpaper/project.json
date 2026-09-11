@@ -1,0 +1,174 @@
+{
+	"contentrating" : "Everyone",
+	"description" : "Скляний дашборд: годинник, календар, музика з Wallpaper Engine і швидкий запуск.",
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+			"accent" : 
+			{
+				"index" : 11,
+				"order" : 111,
+				"text" : "Акцентний колір",
+				"type" : "color",
+				"value" : "0.3686274509803922 0.5647058823529412 0.8941176470588236"
+			},
+			"background" : 
+			{
+				"index" : 3,
+				"order" : 103,
+				"text" : "Свій фон (картинка або .webm, перекриває вибір вище)",
+				"type" : "file",
+				"value" : ""
+			},
+			"bgpreset" : 
+			{
+				"index" : 2,
+				"options" : 
+				[
+					{
+						"label" : "Луг — яскравий",
+						"value" : "meadow"
+					},
+					{
+						"label" : "Луг — серпанок",
+						"value" : "meadow-haze"
+					}
+				],
+				"order" : 102,
+				"text" : "Фон",
+				"type" : "combo",
+				"value" : "meadow-haze"
+			},
+			"character" : 
+			{
+				"index" : 4,
+				"order" : 104,
+				"text" : "Персонаж (PNG з прозорим фоном)",
+				"type" : "file",
+				"value" : ""
+			},
+			"charpos" : 
+			{
+				"index" : 6,
+				"max" : 400,
+				"min" : -300,
+				"order" : 106,
+				"text" : "Висота персонажа (відступ зверху)",
+				"type" : "slider",
+				"value" : 38
+			},
+			"charsize" : 
+			{
+				"index" : 5,
+				"max" : 1300,
+				"min" : 500,
+				"order" : 105,
+				"text" : "Розмір персонажа",
+				"type" : "slider",
+				"value" : 895
+			},
+			"gallery1" : 
+			{
+				"index" : 8,
+				"order" : 108,
+				"text" : "Галерея: велике фото",
+				"type" : "file",
+				"value" : ""
+			},
+			"gallery2" : 
+			{
+				"index" : 9,
+				"order" : 109,
+				"text" : "Галерея: мале фото 1",
+				"type" : "file",
+				"value" : ""
+			},
+			"gallery3" : 
+			{
+				"index" : 10,
+				"order" : 110,
+				"text" : "Галерея: мале фото 2",
+				"type" : "file",
+				"value" : ""
+			},
+			"glassblur" : 
+			{
+				"index" : 13,
+				"max" : 60,
+				"min" : 0,
+				"order" : 113,
+				"text" : "Розмиття скла",
+				"type" : "slider",
+				"value" : 2
+			},
+			"glassopacity" : 
+			{
+				"index" : 12,
+				"max" : 60,
+				"min" : 0,
+				"order" : 112,
+				"text" : "Молочність скла",
+				"type" : "slider",
+				"value" : 15
+			},
+			"jpname" : 
+			{
+				"index" : 7,
+				"order" : 107,
+				"text" : "Вертикальний підпис біля персонажа",
+				"type" : "textinput",
+				"value" : "泉 こなた"
+			},
+			"language" : 
+			{
+				"index" : 1,
+				"options" : 
+				[
+					{
+						"label" : "Українська",
+						"value" : "uk"
+					},
+					{
+						"label" : "English",
+						"value" : "en"
+					}
+				],
+				"order" : 101,
+				"text" : "Мова",
+				"type" : "combo",
+				"value" : "uk"
+			},
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"avatar" :
+			{
+				"index" : 14,
+				"order" : 100,
+				"text" : "Аватар (якщо порожньо — фото акаунта Windows через помічника)",
+				"type" : "file",
+				"value" : ""
+			},
+			"username" :
+			{
+				"index" : 0,
+				"order" : 99,
+				"text" : "Ім'я у привітанні",
+				"type" : "textinput",
+				"value" : "Yareli"
+			}
+		}
+	},
+	"preview" : "preview.jpg",
+	"tags" : [ "Anime" ],
+	"title" : "Glass Dash",
+	"type" : "web",
+	"version" : 0,
+	"visibility" : "private"
+}
