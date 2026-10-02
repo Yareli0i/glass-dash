@@ -2,32 +2,94 @@
 	"contentrating" : "Everyone",
 	"description" : "[h1]Glass Dash — a frosted-glass desktop dashboard[/h1]\nClock, calendar, weather and now playing behind a sheet of frosted glass, with Konata stepping out of it and a dock for your apps.\n\n[h2]🔘 The buttons need a tiny helper[/h2]\nEverything on the dashboard works out of the box [b]except the buttons[/b]. Wallpaper Engine does not let wallpapers open programs or control music, so the dock, play / pause / next, the terminal and the Documents button go through [b]Glass Dash Helper[/b]: under 30 KB, no window, open source.\n[list]\n[*] [url=https://github.com/Yareli0i/glass-dash/releases/latest/download/glass-dash-helper.zip]Download glass-dash-helper.zip[/url] and unpack it\n[*] Double-click [b]install.cmd[/b] — the helper starts now and with Windows\n[*] That's it: the buttons work right away. [b]uninstall.cmd[/b] removes it\n[/list]\nDon't need the buttons? Turn [b]Buttons[/b] off in the wallpaper settings and the dock, the terminal and the music controls disappear — the rest keeps working.\n\nWindows may warn about an unknown publisher because the file is not signed. The helper listens only on your own PC, answers only this wallpaper and runs only what is listed in its .ini file. Source and details: [url=https://github.com/Yareli0i/glass-dash]github.com/Yareli0i/glass-dash[/url]\n\n[h2]✨ What it does[/h2]\n[list]\n[*] [b]Clock, date and calendar[/b], and a greeting with your name that follows the time of day\n[*] [b]Now playing[/b] from any player Windows sees (Spotify, a browser…): title, artist, cover, progress. The accent colour follows the cover\n[*] [b]Weather[/b] for your city with the next few hours — instead of the player or next to it\n[*] [b]Dock[/b]: Discord, Telegram, Spotify, YouTube, Steam, VS Code. A button opens the app, brings it to the front, or minimizes it if it was already in front. Each one lights up in the app's own colour\n[*] [b]Frosted glass[/b] you can make milkier or clearer, over a built-in meadow, your own picture or a .webm\n[*] [b]Your own character[/b] (any PNG with a transparent background), three gallery photos, avatar and accent colour\n[*] Ukrainian and English\n[/list]\n\n[h2]⚙️ Settings[/h2]\nName, avatar, language, background, character and its size, gallery photos, accent colour, glass milkiness and blur, music / weather / both, city, buttons on / off.\n\nThe only thing that leaves your PC is the weather request: the city you typed goes to open-meteo.com. No city, no request.\n\n[i]If you like it, a thumbs up helps other people find it 👍[/i]\n\n[hr][/hr]\n\n[h2]🇺🇦 Українською[/h2]\nГодинник, календар, погода й музика за матовим склом, Коната, що виходить із нього, і док для ваших програм.\n\n[b]Кнопкам потрібен маленький помічник.[/b] Усе на дашборді працює одразу, [b]крім кнопок[/b]. Wallpaper Engine не дозволяє шпалерам запускати програми й керувати музикою, тому док, ⏮ ⏯ ⏭, термінал і кнопка «Документи» працюють через [b]Glass Dash Helper[/b]: менше 30 КБ, без вікна, з відкритим кодом.\n[list]\n[*] [url=https://github.com/Yareli0i/glass-dash/releases/latest/download/glass-dash-helper.zip]Завантажте glass-dash-helper.zip[/url] і розпакуйте\n[*] Двічі клацніть [b]install.cmd[/b] — помічник запуститься й стартуватиме разом з Windows\n[*] Кнопки запрацюють одразу. Видалення — [b]uninstall.cmd[/b]\n[/list]\nКнопки не потрібні? Вимкніть [b]«Кнопки»[/b] в налаштуваннях шпалери — док, термінал і керування музикою зникнуть, решта працюватиме як і раніше.\n\nWindows може попередити про невідомого видавця: у файла немає цифрового підпису. Помічник слухає лише ваш власний ПК, відповідає лише цій шпалері й запускає тільки те, що записано в його .ini.\n\n[b]Що вміє:[/b]\n[list]\n[*] Годинник, дата, календар і привітання з вашим ім'ям за часом доби\n[*] Музика з будь-якого плеєра, який бачить Windows: назва, виконавець, обкладинка, прогрес; акцентний колір підлаштовується під обкладинку\n[*] Погода для вашого міста на найближчі години — замість плеєра або поруч із ним\n[*] Док: Discord, Telegram, Spotify, YouTube, Steam, VS Code — відкриває програму, виводить наперед, згортає; кожна кнопка світиться кольором своєї програми\n[*] Матове скло, власний фон (картинка або .webm), персонаж, галерея, аватар, акцентний колір\n[/list]\nЗа межі ПК іде лише запит погоди: назва вашого міста — на open-meteo.com.\n\nКод і баг-репорти: [url=https://github.com/Yareli0i/glass-dash]GitHub[/url].\n\n[i]Konata Izumi / Lucky Star © Kagami Yoshimizu / Kadokawa. Unofficial fan work.[/i]",
 	"file" : "index.html",
-	"general" : {
-		"properties" : {
-			"accent" : {
+	"general" : 
+	{
+		"localization" : 
+		{
+			"en-us" : 
+			{
+				"ui_accent" : "Accent colour",
+				"ui_avatar" : "Avatar (empty: your Windows account picture, shown through the helper)",
+				"ui_background" : "Your own background (image or .webm, overrides the choice above)",
+				"ui_bg_haze" : "Meadow — haze",
+				"ui_bg_meadow" : "Meadow — bright",
+				"ui_bgpreset" : "Background",
+				"ui_buttons" : "Buttons: dock, terminal, music controls (they need the helper)",
+				"ui_character" : "Character (PNG with a transparent background)",
+				"ui_charpos" : "Character height (offset from the top)",
+				"ui_charsize" : "Character size",
+				"ui_city" : "City for the weather (e.g. Kyiv)",
+				"ui_corner" : "Bottom right corner",
+				"ui_corner_both" : "Music and weather",
+				"ui_corner_music" : "Music",
+				"ui_corner_weather" : "Weather",
+				"ui_gallery1" : "Gallery: large photo",
+				"ui_gallery2" : "Gallery: small photo 1",
+				"ui_gallery3" : "Gallery: small photo 2",
+				"ui_glassblur" : "Glass blur",
+				"ui_glassopacity" : "Glass milkiness",
+				"ui_jpname" : "Vertical caption next to the character",
+				"ui_language" : "Language",
+				"ui_username" : "Name in the greeting"
+			},
+			"uk-ua" : 
+			{
+				"ui_accent" : "Акцентний колір",
+				"ui_avatar" : "Аватар (якщо порожньо — фото акаунта Windows через помічника)",
+				"ui_background" : "Свій фон (картинка або .webm, перекриває вибір вище)",
+				"ui_bg_haze" : "Луг — серпанок",
+				"ui_bg_meadow" : "Луг — яскравий",
+				"ui_bgpreset" : "Фон",
+				"ui_buttons" : "Кнопки: док, термінал, керування музикою (потрібен помічник)",
+				"ui_character" : "Персонаж (PNG з прозорим фоном)",
+				"ui_charpos" : "Висота персонажа (відступ зверху)",
+				"ui_charsize" : "Розмір персонажа",
+				"ui_city" : "Місто для погоди (напр. Київ)",
+				"ui_corner" : "Правий нижній кут",
+				"ui_corner_both" : "Музика й погода",
+				"ui_corner_music" : "Музика",
+				"ui_corner_weather" : "Погода",
+				"ui_gallery1" : "Галерея: велике фото",
+				"ui_gallery2" : "Галерея: мале фото 1",
+				"ui_gallery3" : "Галерея: мале фото 2",
+				"ui_glassblur" : "Розмиття скла",
+				"ui_glassopacity" : "Молочність скла",
+				"ui_jpname" : "Вертикальний підпис біля персонажа",
+				"ui_language" : "Мова",
+				"ui_username" : "Ім'я у привітанні"
+			}
+		},
+		"properties" : 
+		{
+			"accent" : 
+			{
 				"index" : 12,
 				"order" : 112,
 				"text" : "ui_accent",
 				"type" : "color",
 				"value" : "0.3686274509803922 0.5647058823529412 0.8941176470588236"
 			},
-			"avatar" : {
+			"avatar" : 
+			{
 				"index" : 1,
 				"order" : 101,
 				"text" : "ui_avatar",
 				"type" : "file",
 				"value" : ""
 			},
-			"background" : {
+			"background" : 
+			{
 				"index" : 4,
 				"order" : 104,
 				"text" : "ui_background",
 				"type" : "file",
 				"value" : ""
 			},
-			"bgpreset" : {
+			"bgpreset" : 
+			{
 				"index" : 3,
-				"options" : [
+				"options" : 
+				[
 					{
 						"label" : "ui_bg_meadow",
 						"value" : "meadow"
@@ -42,14 +104,24 @@
 				"type" : "combo",
 				"value" : "meadow-haze"
 			},
-			"character" : {
+			"buttons" : 
+			{
+				"index" : 17,
+				"order" : 117,
+				"text" : "ui_buttons",
+				"type" : "bool",
+				"value" : true
+			},
+			"character" : 
+			{
 				"index" : 5,
 				"order" : 105,
 				"text" : "ui_character",
 				"type" : "file",
 				"value" : ""
 			},
-			"charpos" : {
+			"charpos" : 
+			{
 				"index" : 7,
 				"max" : 400,
 				"min" : -300,
@@ -58,7 +130,8 @@
 				"type" : "slider",
 				"value" : 38
 			},
-			"charsize" : {
+			"charsize" : 
+			{
 				"index" : 6,
 				"max" : 1300,
 				"min" : 500,
@@ -67,16 +140,19 @@
 				"type" : "slider",
 				"value" : 895
 			},
-			"city" : {
+			"city" : 
+			{
 				"index" : 16,
 				"order" : 116,
 				"text" : "ui_city",
 				"type" : "textinput",
 				"value" : ""
 			},
-			"corner" : {
+			"corner" : 
+			{
 				"index" : 15,
-				"options" : [
+				"options" : 
+				[
 					{
 						"label" : "ui_corner_music",
 						"value" : "music"
@@ -95,28 +171,32 @@
 				"type" : "combo",
 				"value" : "music"
 			},
-			"gallery1" : {
+			"gallery1" : 
+			{
 				"index" : 9,
 				"order" : 109,
 				"text" : "ui_gallery1",
 				"type" : "file",
 				"value" : ""
 			},
-			"gallery2" : {
+			"gallery2" : 
+			{
 				"index" : 10,
 				"order" : 110,
 				"text" : "ui_gallery2",
 				"type" : "file",
 				"value" : ""
 			},
-			"gallery3" : {
+			"gallery3" : 
+			{
 				"index" : 11,
 				"order" : 111,
 				"text" : "ui_gallery3",
 				"type" : "file",
 				"value" : ""
 			},
-			"glassblur" : {
+			"glassblur" : 
+			{
 				"index" : 14,
 				"max" : 60,
 				"min" : 0,
@@ -125,7 +205,8 @@
 				"type" : "slider",
 				"value" : 2
 			},
-			"glassopacity" : {
+			"glassopacity" : 
+			{
 				"index" : 13,
 				"max" : 60,
 				"min" : 0,
@@ -134,16 +215,19 @@
 				"type" : "slider",
 				"value" : 15
 			},
-			"jpname" : {
+			"jpname" : 
+			{
 				"index" : 8,
 				"order" : 108,
 				"text" : "ui_jpname",
 				"type" : "textinput",
 				"value" : "泉 こなた"
 			},
-			"language" : {
+			"language" : 
+			{
 				"index" : 2,
-				"options" : [
+				"options" : 
+				[
 					{
 						"label" : "English",
 						"value" : "en"
@@ -158,89 +242,30 @@
 				"type" : "combo",
 				"value" : "en"
 			},
-			"schemecolor" : {
+			"schemecolor" : 
+			{
 				"order" : 0,
 				"text" : "ui_browse_properties_scheme_color",
 				"type" : "color",
 				"value" : "0 0 0"
 			},
-			"username" : {
+			"username" : 
+			{
 				"index" : 0,
 				"order" : 100,
 				"text" : "ui_username",
 				"type" : "textinput",
 				"value" : ""
-			},
-			"buttons" : {
-				"index" : 18,
-				"order" : 117,
-				"text" : "ui_buttons",
-				"type" : "bool",
-				"value" : true
-			}
-		},
-		"localization" : {
-			"en-us" : {
-				"ui_username" : "Name in the greeting",
-				"ui_avatar" : "Avatar (empty: your Windows account picture, shown through the helper)",
-				"ui_language" : "Language",
-				"ui_bgpreset" : "Background",
-				"ui_bg_meadow" : "Meadow — bright",
-				"ui_bg_haze" : "Meadow — haze",
-				"ui_background" : "Your own background (image or .webm, overrides the choice above)",
-				"ui_character" : "Character (PNG with a transparent background)",
-				"ui_charsize" : "Character size",
-				"ui_charpos" : "Character height (offset from the top)",
-				"ui_jpname" : "Vertical caption next to the character",
-				"ui_gallery1" : "Gallery: large photo",
-				"ui_gallery2" : "Gallery: small photo 1",
-				"ui_gallery3" : "Gallery: small photo 2",
-				"ui_accent" : "Accent colour",
-				"ui_glassopacity" : "Glass milkiness",
-				"ui_glassblur" : "Glass blur",
-				"ui_corner" : "Bottom right corner",
-				"ui_corner_music" : "Music",
-				"ui_corner_weather" : "Weather",
-				"ui_corner_both" : "Music and weather",
-				"ui_city" : "City for the weather (e.g. Kyiv)",
-				"ui_buttons" : "Buttons: dock, terminal, music controls (they need the helper)"
-			},
-			"uk-ua" : {
-				"ui_username" : "Ім'я у привітанні",
-				"ui_avatar" : "Аватар (якщо порожньо — фото акаунта Windows через помічника)",
-				"ui_language" : "Мова",
-				"ui_bgpreset" : "Фон",
-				"ui_bg_meadow" : "Луг — яскравий",
-				"ui_bg_haze" : "Луг — серпанок",
-				"ui_background" : "Свій фон (картинка або .webm, перекриває вибір вище)",
-				"ui_character" : "Персонаж (PNG з прозорим фоном)",
-				"ui_charsize" : "Розмір персонажа",
-				"ui_charpos" : "Висота персонажа (відступ зверху)",
-				"ui_jpname" : "Вертикальний підпис біля персонажа",
-				"ui_gallery1" : "Галерея: велике фото",
-				"ui_gallery2" : "Галерея: мале фото 1",
-				"ui_gallery3" : "Галерея: мале фото 2",
-				"ui_accent" : "Акцентний колір",
-				"ui_glassopacity" : "Молочність скла",
-				"ui_glassblur" : "Розмиття скла",
-				"ui_corner" : "Правий нижній кут",
-				"ui_corner_music" : "Музика",
-				"ui_corner_weather" : "Погода",
-				"ui_corner_both" : "Музика й погода",
-				"ui_city" : "Місто для погоди (напр. Київ)",
-				"ui_buttons" : "Кнопки: док, термінал, керування музикою (потрібен помічник)"
 			}
 		}
 	},
 	"preview" : "preview.jpg",
 	"ratingsex" : "none",
 	"ratingviolence" : "none",
-	"tags" : [
-		"Anime"
-	],
+	"tags" : [ "Anime" ],
 	"title" : "Glass Dash - Konata",
 	"type" : "web",
-	"version" : 2,
+	"version" : 3,
 	"visibility" : "public",
 	"workshopid" : "3799717997",
 	"workshopurl" : "steam://url/CommunityFilePage/3799717997"
