@@ -28,7 +28,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.Win32;
 
-static class GlassDashHelper
+static partial class GlassDashHelper
 {
     const int Port = 47831;
     const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
@@ -51,7 +51,8 @@ static class GlassDashHelper
         "youtube  = https://www.youtube.com/\r\n" +
         "steam    = steam://open/main   | steamwebhelper, steam\r\n" +
         "vscode   = exe-of:vscode       | Code\r\n" +
-        "terminal = wt.exe              | WindowsTerminal\r\n";
+        "terminal = wt.exe              | WindowsTerminal\r\n" +
+        "documents = shell:Personal\r\n";
 
     static readonly Dictionary<string, byte> MediaKeys = new Dictionary<string, byte>
     {
@@ -182,6 +183,10 @@ static class GlassDashHelper
                     return;
                 }
 
+                bool handled = false;
+                Extra(method, path, stream, ref handled);
+                if (handled) return;
+
                 if (method == "OPTIONS") Reply(stream, 204);
                 else if (method == "GET" && path == "/ping") Reply(stream, 200);
                 else if (method == "GET" && path == "/avatar") ServeAvatar(stream);
@@ -275,6 +280,10 @@ static class GlassDashHelper
         }
         return null;
     }
+
+    // Room for routes of your own: add a second .cs file with the body of this method to the
+    // build and it is asked first. Without one the compiler drops the call.
+    static partial void Extra(string method, string path, NetworkStream stream, ref bool handled);
 
     /* ---------- actions ---------- */
 
@@ -377,38 +386,44 @@ static class GlassDashHelper
             DateTime stamp = File.Exists(ConfigPath) ? File.GetLastWriteTimeUtc(ConfigPath) : DateTime.MinValue;
             if (actions != null && stamp == actionsStamp) return actions;
 
-            string[] lines = stamp == DateTime.MinValue
-                ? DefaultConfig.Split('\n')
-                : File.ReadAllLines(ConfigPath, Encoding.UTF8);
+            // The .ini is written once, at first start, and then belongs to the user. A button
+            // added in a later version would never reach it, so the built-in list goes in
+            // first and the file is read on top of it: the file wins wherever it names an id.
             Dictionary<string, ButtonAction> map = new Dictionary<string, ButtonAction>(StringComparer.OrdinalIgnoreCase);
-            foreach (string raw in lines)
-            {
-                string line = raw.Trim();
-                if (line.Length == 0 || line[0] == ';' || line[0] == '#') continue;
-                int eq = line.IndexOf('=');
-                if (eq <= 0) continue;
-
-                string value = line.Substring(eq + 1);
-                int bar = value.IndexOf('|');
-                ButtonAction action = new ButtonAction
-                {
-                    Target = (bar < 0 ? value : value.Substring(0, bar)).Trim(),
-                    Processes = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-                };
-                if (bar >= 0)
-                {
-                    foreach (string name in value.Substring(bar + 1).Split(','))
-                    {
-                        string n = name.Trim();
-                        if (n.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) n = n.Substring(0, n.Length - 4);
-                        if (n.Length > 0) action.Processes.Add(n);
-                    }
-                }
-                map[line.Substring(0, eq).Trim()] = action;
-            }
+            ReadActions(DefaultConfig.Split('\n'), map);
+            if (stamp != DateTime.MinValue) ReadActions(File.ReadAllLines(ConfigPath, Encoding.UTF8), map);
             actions = map;
             actionsStamp = stamp;
             return map;
+        }
+    }
+
+    static void ReadActions(string[] lines, Dictionary<string, ButtonAction> map)
+    {
+        foreach (string raw in lines)
+        {
+            string line = raw.Trim();
+            if (line.Length == 0 || line[0] == ';' || line[0] == '#') continue;
+            int eq = line.IndexOf('=');
+            if (eq <= 0) continue;
+
+            string value = line.Substring(eq + 1);
+            int bar = value.IndexOf('|');
+            ButtonAction action = new ButtonAction
+            {
+                Target = (bar < 0 ? value : value.Substring(0, bar)).Trim(),
+                Processes = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            };
+            if (bar >= 0)
+            {
+                foreach (string name in value.Substring(bar + 1).Split(','))
+                {
+                    string n = name.Trim();
+                    if (n.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) n = n.Substring(0, n.Length - 4);
+                    if (n.Length > 0) action.Processes.Add(n);
+                }
+            }
+            map[line.Substring(0, eq).Trim()] = action;
         }
     }
 
