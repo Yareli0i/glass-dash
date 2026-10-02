@@ -4,12 +4,15 @@
    Everything in CONFIG can be overridden from the WE properties panel (see project.json). */
 
 const CONFIG = {
-  name: 'Yareli',
-  lang: 'uk',
+  name: '',
+  lang: 'en',
   jpName: '泉 こなた',
   bgPreset: 'meadow-haze',
   blur: 2,
   helper: 'http://127.0.0.1:47831',
+  buttons: true,   // dock, terminal, media controls — everything that needs the helper
+  corner: 'music', // what sits under the gallery: music | weather | both
+  city: '',
 };
 
 const PARAMS = new URLSearchParams(location.search);
@@ -31,8 +34,25 @@ const I18N = {
     greet: ['Доброї ночі,', 'Доброго ранку,', 'Доброго дня,', 'Доброго вечора,'],
     idleTitle: 'Нічого не грає',
     idleSub: 'Увімкни щось у Spotify',
-    helperOff: 'Кнопкам потрібен Glass Dash Helper — посилання в описі шпалери',
+    wxNoCity: 'Впиши місто в налаштуваннях шпалери',
+    wxNotFound: 'Не знайшов такого міста',
+    wxOffline: 'Погода не відповідає',
+    wxWind: 'вітер',
+    wxWindUnit: 'м/с',
+    helperOff: 'Кнопкам потрібен Glass Dash Helper',
+    helperOld: 'Цій кнопці потрібен новіший Glass Dash Helper',
+    hcTitle: 'Кнопкам потрібен помічник',
+    hcWhy: 'Wallpaper Engine не дозволяє шпалерам запускати програми й керувати музикою. Це робить Glass Dash Helper — менше 30 КБ, без вікон, з відкритим кодом.',
+    hcSteps: ['Відкрий цю адресу в браузері', 'Завантаж glass-dash-helper.zip і запусти install.cmd', 'Кнопки запрацюють одразу — перезапускати нічого не треба'],
+    hcCopy: 'Скопіювати',
+    hcCopied: 'Скопійовано',
+    hcPaste: 'Тепер відкрий браузер і натисни Ctrl+V в адресному рядку.',
+    hcCopyFailed: 'Не вийшло',
+    hcType: 'Набери адресу вручну. У ній нуль, а не літера «О»: Yareli0i.',
+    hcNote: 'Кнопки не потрібні? Вимкни «Кнопки» в налаштуваннях шпалери — годинник, погода й музика працюють і без помічника.',
+    hcClose: 'Закрити',
     openFailed: 'Не вдалося відкрити — перевір glass-dash-helper.ini',
+    documents: 'Документи',
     hide: 'Сховати дашборд',
     show: 'Показати дашборд',
   },
@@ -46,8 +66,25 @@ const I18N = {
     greet: ['Good night,', 'Good morning,', 'Good afternoon,', 'Good evening,'],
     idleTitle: 'Nothing playing',
     idleSub: 'Start something in Spotify',
-    helperOff: 'The buttons need Glass Dash Helper — see the wallpaper description',
+    wxNoCity: 'Set your city in the wallpaper settings',
+    wxNotFound: 'No such city found',
+    wxOffline: 'Weather is not answering',
+    wxWind: 'wind',
+    wxWindUnit: 'm/s',
+    helperOff: 'The buttons need Glass Dash Helper',
+    helperOld: 'This button needs a newer Glass Dash Helper',
+    hcTitle: 'The buttons need a helper',
+    hcWhy: 'Wallpaper Engine does not let wallpapers open programs or control music. Glass Dash Helper does that — under 30 KB, no window, open source.',
+    hcSteps: ['Open this address in your browser', 'Download glass-dash-helper.zip and run install.cmd', 'The buttons work right away — nothing to restart'],
+    hcCopy: 'Copy',
+    hcCopied: 'Copied',
+    hcPaste: 'Now open your browser and press Ctrl+V in the address bar.',
+    hcCopyFailed: 'No luck',
+    hcType: 'Type the address by hand. It has a zero, not the letter O: Yareli0i.',
+    hcNote: 'No need for buttons? Turn “Buttons” off in the wallpaper settings — the clock, weather and music work without the helper.',
+    hcClose: 'Close',
     openFailed: 'Could not open it — check glass-dash-helper.ini',
+    documents: 'Documents',
     hide: 'Hide dashboard',
     show: 'Show dashboard',
   },
@@ -86,14 +123,31 @@ const BACKGROUNDS = {
 
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2, '0');
-const T = () => I18N[CONFIG.lang] || I18N.uk;
+const T = () => I18N[CONFIG.lang] || I18N.en;
+
+// English is the standard; anything the page does not know falls back to it. Guessing from
+// the system does not work here: inside Wallpaper Engine the browser always reports en-US.
+const resolveLang = pref => (I18N[pref] ? pref : 'en');
 
 /* ---------- media integration (must be registered immediately) ---------- */
 
 const media = { title: '', artist: '', thumb: '', color: '', state: 0, pos: 0, dur: 0, stamp: 0 };
-const isPlaying = () => window.wallpaperMediaIntegration
-  ? media.state === window.wallpaperMediaIntegration.PLAYBACK_PLAYING
-  : media.state === 1;
+
+// Wallpaper Engine reports the playback state only when it changes, so a wallpaper that loads
+// mid-song would think nothing plays. Movement between two timeline reports is the real signal.
+let stateKnown = false;
+let inferPlaying = false;
+let lastReport = -1;
+
+function isPlaying() {
+  const mi = window.wallpaperMediaIntegration;
+  const playingState = mi ? mi.PLAYBACK_PLAYING : 1;
+  if (stateKnown && media.state !== playingState) return false;
+  if (!stateKnown && !inferPlaying) return false;
+  return performance.now() - media.stamp < 20000;
+}
+
+const position = () => media.pos + (isPlaying() ? (performance.now() - media.stamp) / 1000 : 0);
 
 if (typeof window.wallpaperRegisterMediaPropertiesListener === 'function') {
   window.wallpaperRegisterMediaPropertiesListener(e => {
@@ -108,12 +162,19 @@ if (typeof window.wallpaperRegisterMediaPropertiesListener === 'function') {
     renderPlayer();
   });
   window.wallpaperRegisterMediaPlaybackListener(e => {
+    media.pos = position();
     media.state = e.state;
+    stateKnown = true;
     media.stamp = performance.now();
     renderPlayer();
   });
   window.wallpaperRegisterMediaTimelineListener(e => {
-    media.pos = e.position;
+    const newTrack = e.duration !== media.dur;
+    const current = position();
+    if (lastReport >= 0 && !newTrack) inferPlaying = e.position > lastReport + 0.2;
+    lastReport = e.position;
+    const drift = e.position - current;
+    media.pos = newTrack || Math.abs(drift) > 1.5 ? e.position : current + drift * 0.35;
     media.dur = e.duration;
     media.stamp = performance.now();
   });
@@ -132,12 +193,12 @@ let hasCharacter = false;
 window.wallpaperPropertyListener = {
   applyUserProperties(p) {
     const root = document.documentElement.style;
-    if (p.username) CONFIG.name = p.username.value.trim() || 'Yareli';
+    if (p.username) CONFIG.name = p.username.value.trim();
     if (p.avatar) {
       customAvatar = weFile(p.avatar.value);
       applyAvatar();
     }
-    if (p.language) CONFIG.lang = p.language.value;
+    if (p.language) CONFIG.lang = resolveLang(p.language.value);
     if (p.jpname) CONFIG.jpName = p.jpname.value;
     if (p.accent) root.setProperty('--accent', weColor(p.accent.value));
     if (p.glassopacity) root.setProperty('--glass-alpha', p.glassopacity.value / 100);
@@ -149,6 +210,13 @@ window.wallpaperPropertyListener = {
     if (p.bgpreset || p.background) applyBackground();
     else if (p.glassblur) buildBlur(currentBackground);
     if (p.character) setCharacter(weFile(p.character.value));
+    if (p.city) CONFIG.city = p.city.value;
+    if (p.corner) CONFIG.corner = p.corner.value;
+    if (p.buttons) {
+      CONFIG.buttons = p.buttons.value;
+      applyButtons();
+    }
+    if (p.corner || p.city || p.language) applyCorner();
     ['gallery1', 'gallery2', 'gallery3'].forEach((key, i) => {
       if (p[key]) setGallery(i, weFile(p[key].value));
     });
@@ -215,15 +283,28 @@ function renderGreeting() {
   const el = $('greeting');
   el.replaceChildren();
   const small = document.createElement('small');
-  small.textContent = T().greet[greetIndex(new Date().getHours())];
   const strong = document.createElement('strong');
-  strong.textContent = CONFIG.name + '!';
+  const greet = T().greet[greetIndex(new Date().getHours())];
+  if (CONFIG.name) {
+    small.textContent = greet;
+    strong.textContent = CONFIG.name + '!';
+  } else {
+    // No name given: the greeting itself takes both lines — "Good" / "afternoon!".
+    const words = greet.replace(/,$/, '').split(' ');
+    strong.textContent = words.pop() + '!';
+    small.textContent = words.join(' ');
+  }
   el.append(small, strong);
 }
 
 function renderProfile() {
-  $('profile-name').textContent = CONFIG.name;
-  $('avatar').textContent = CONFIG.name.charAt(0).toUpperCase();
+  // The chip opens the Documents folder; without a name it simply says so. With the buttons
+  // off it opens nothing, so a chip with no name has nothing left to say and goes away.
+  $('profile').hidden = !CONFIG.name && !CONFIG.buttons;
+  $('profile-name').textContent = CONFIG.name || T().documents;
+  $('profile').setAttribute('aria-label', T().documents);
+  if (CONFIG.name) $('avatar').textContent = CONFIG.name.charAt(0).toUpperCase();
+  else $('avatar').innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.6"/><path d="M5 19.5c1.2-3.4 4-5 7-5s5.800 1.600 7 5"/></svg>';
   // The vertical caption names the character, so it only shows when there is one.
   const jp = $('jp-name');
   jp.textContent = CONFIG.jpName;
@@ -249,7 +330,8 @@ function renderPlayer() {
   if (media.color && CSS.supports('color', media.color)) {
     document.documentElement.style.setProperty('--accent', media.color);
   }
-  $('play-icon').setAttribute('d', isPlaying() ? ICONS.pause : ICONS.play);
+  // with nothing playing the button always offers play, whatever state the last event left behind
+  $('play-icon').setAttribute('d', has && isPlaying() ? ICONS.pause : ICONS.play);
   renderProgress();
 }
 
@@ -260,8 +342,7 @@ function renderProgress() {
     $('track-time').textContent = '';
     return;
   }
-  const elapsed = isPlaying() ? (performance.now() - media.stamp) / 1000 : 0;
-  const pos = Math.min(media.dur, media.pos + elapsed);
+  const pos = Math.min(media.dur, position());
   $('progress-fill').style.width = (pos / media.dur) * 100 + '%';
   $('track-time').textContent = `${mmss(pos)} / ${mmss(media.dur)}`;
 }
@@ -280,6 +361,7 @@ function renderAll() {
   document.documentElement.lang = CONFIG.lang;
   renderProfile();
   renderPlayer();
+  renderWeather();
   renderTime(new Date());
   $('hide-btn').setAttribute('aria-label', document.body.classList.contains('ui-hidden') ? T().show : T().hide);
 }
@@ -324,6 +406,7 @@ function setGallery(i, src) {
 
 // Avatar: the picked file, else the Windows account picture served by the helper, else the initial.
 let avatarRetry = 0;
+let avatarTries = 0;
 
 function applyAvatar() {
   clearTimeout(avatarRetry);
@@ -335,14 +418,164 @@ function applyAvatar() {
   img.onload = () => {
     el.style.backgroundImage = `url("${src}")`;
     el.classList.add('photo');
+    avatarTries = 0;
   };
   img.onerror = () => {
     el.style.backgroundImage = '';
     el.classList.remove('photo');
-    // The helper and Wallpaper Engine both start at login, so the helper may simply be late.
-    if (!customAvatar) avatarRetry = setTimeout(applyAvatar, 30000);
+    // Windows holds startup programs back for about a minute after login, so the helper is
+    // usually just late: ask again soon at first, then rarely.
+    if (!customAvatar) {
+      avatarTries++;
+      avatarRetry = setTimeout(applyAvatar, Math.min(60, 4 * avatarTries) * 1000);
+    }
   };
   img.src = src;
+}
+
+/* ---------- weather (Open-Meteo: no key, no account) ----------
+   The city is geocoded once, then the forecast is refreshed every quarter of an hour. */
+
+const WX_TEXT = {
+  0: ['Ясно', 'Clear'], 1: ['Переважно ясно', 'Mostly clear'], 2: ['Мінлива хмарність', 'Partly cloudy'], 3: ['Хмарно', 'Overcast'],
+  45: ['Туман', 'Fog'], 48: ['Паморозь', 'Rime fog'],
+  51: ['Мряка', 'Light drizzle'], 53: ['Мряка', 'Drizzle'], 55: ['Сильна мряка', 'Heavy drizzle'],
+  56: ['Крижана мряка', 'Freezing drizzle'], 57: ['Крижана мряка', 'Freezing drizzle'],
+  61: ['Невеликий дощ', 'Light rain'], 63: ['Дощ', 'Rain'], 65: ['Сильний дощ', 'Heavy rain'],
+  66: ['Крижаний дощ', 'Freezing rain'], 67: ['Крижаний дощ', 'Freezing rain'],
+  71: ['Невеликий сніг', 'Light snow'], 73: ['Сніг', 'Snow'], 75: ['Сильний сніг', 'Heavy snow'], 77: ['Сніжні зерна', 'Snow grains'],
+  80: ['Злива', 'Showers'], 81: ['Злива', 'Showers'], 82: ['Сильна злива', 'Heavy showers'],
+  85: ['Снігова злива', 'Snow showers'], 86: ['Снігова злива', 'Snow showers'],
+  95: ['Гроза', 'Thunderstorm'], 96: ['Гроза з градом', 'Thunderstorm with hail'], 99: ['Гроза з градом', 'Thunderstorm with hail'],
+};
+
+const SUN = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#f5a01c"/>`
+  + '<g stroke="#f5a01c" stroke-width="3" stroke-linecap="round">'
+  + `<path d="M${cx} ${cy - r - 7.5}v4.5M${cx} ${cy + r + 3}v4.5M${cx - r - 7.5} ${cy}h4.5M${cx + r + 3} ${cy}h4.5`
+  + `M${cx - r - 5.5} ${cy - r - 5.5}l3.2 3.2M${cx + r + 2.3} ${cy + r + 2.3}l3.2 3.2`
+  + `M${cx + r + 5.5} ${cy - r - 5.5}l-3.2 3.2M${cx - r - 2.3} ${cy + r + 2.3}l-3.2 3.2"/></g>`;
+const MOON = '<path fill="#ecdfb2" d="M34.8 30.6A13.4 13.4 0 0 1 20 13.8a13.9 13.9 0 1 0 14.8 16.8Z"/>';
+const CLOUD = (y = 0) => `<path fill="#7d8fa7" transform="translate(0 ${y})" d="M16 37.5h19a8 8 0 0 0 1.2-15.9A12.5 12.5 0 0 0 12.8 20.5 8 8 0 0 0 16 37.5Z"/>`;
+const DROPS = n => '<g stroke="#4f8fd6" stroke-width="3.2" stroke-linecap="round">'
+  + [18, 25.5, 33].slice(0, n).map(x => `<path d="M${x} 40.5l-1.6 4.5"/>`).join('') + '</g>';
+const FLAKES = '<g fill="#9cc6ee"><circle cx="18" cy="43.5" r="2.3"/><circle cx="25.5" cy="43.5" r="2.3"/><circle cx="33" cy="43.5" r="2.3"/></g>';
+const BOLT = '<path fill="#f4b63a" d="M26.5 37.5l-8.5 10.8h5.6l-1.8 7.2 9.2-12h-5.6z"/>';
+
+function wxIcon(code, isDay) {
+  const c = Number(code);
+  let inner;
+  if (c <= 1) inner = isDay ? SUN(24, 24, 9.5) : MOON;
+  else if (c === 2) inner = (isDay ? SUN(17, 16, 7) : MOON) + CLOUD(2);
+  else if (c === 3) inner = CLOUD(1);
+  else if (c === 45 || c === 48) inner = CLOUD(-2) + '<g stroke="#9aa8bb" stroke-width="3.2" stroke-linecap="round"><path d="M12 41h24M17 47h14"/></g>';
+  else if (c <= 57) inner = CLOUD(-2) + DROPS(2);
+  else if (c <= 67 || (c >= 80 && c <= 82)) inner = CLOUD(-2) + DROPS(3);
+  else if (c <= 77 || c === 85 || c === 86) inner = CLOUD(-2) + FLAKES;
+  else inner = CLOUD(-4) + BOLT;
+  return `<svg viewBox="0 0 48 56" aria-hidden="true">${inner}</svg>`;
+}
+
+const WEATHER = { key: '', lat: 0, lon: 0, place: '', temp: null, code: 0, day: 1, wind: 0, hours: [], error: '' };
+let wxTimer = 0;
+let wxFails = 0;
+
+const cornerMode = () => (['music', 'weather', 'both'].includes(CONFIG.corner) ? CONFIG.corner : 'music');
+
+function applyCorner() {
+  const mode = cornerMode();
+  document.body.classList.toggle('corner-both', mode === 'both');
+  $('player').hidden = mode === 'weather';
+  $('weather').hidden = mode === 'music';
+  if (mode === 'music') clearTimeout(wxTimer);
+  else loadWeather();
+}
+
+async function getJSON(url) {
+  const stop = new AbortController();
+  const timer = setTimeout(() => stop.abort(), 9000);
+  try {
+    const res = await fetch(url, { signal: stop.signal, cache: 'no-store' });
+    if (!res.ok) throw new Error('http ' + res.status);
+    return await res.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function loadWeather() {
+  clearTimeout(wxTimer);
+  if (cornerMode() === 'music' || (DEMO && !CONFIG.city.trim())) return;
+  const city = CONFIG.city.trim();
+  if (!city) {
+    WEATHER.error = 'nocity';
+    renderWeather();
+    return;
+  }
+  try {
+    const key = city + '|' + CONFIG.lang;
+    if (WEATHER.key !== key) {
+      const geo = await getJSON('https://geocoding-api.open-meteo.com/v1/search?count=1&format=json'
+        + `&language=${CONFIG.lang}&name=${encodeURIComponent(city)}`);
+      const hit = geo.results && geo.results[0];
+      if (!hit) throw new Error('notfound');
+      Object.assign(WEATHER, { key, lat: hit.latitude, lon: hit.longitude, place: hit.name });
+    }
+    const f = await getJSON(`https://api.open-meteo.com/v1/forecast?latitude=${WEATHER.lat}&longitude=${WEATHER.lon}`
+      + '&current=temperature_2m,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code,is_day'
+      + '&wind_speed_unit=ms&forecast_days=2&timezone=auto');
+    const now = f.current || {};
+    WEATHER.temp = Math.round(now.temperature_2m);
+    WEATHER.code = now.weather_code;
+    WEATHER.day = now.is_day;
+    WEATHER.wind = Math.round(now.wind_speed_10m);
+    WEATHER.hours = nextHours(f.hourly, now.time);
+    WEATHER.error = '';
+    wxFails = 0;
+    wxTimer = setTimeout(loadWeather, 15 * 60 * 1000);
+  } catch (e) {
+    WEATHER.error = e && e.message === 'notfound' ? 'notfound' : 'offline';
+    wxFails++;
+    // a dropped connection or a PC waking up: come back soon at first, then back off
+    wxTimer = setTimeout(loadWeather, Math.min(15, 2 * wxFails) * 60 * 1000);
+  }
+  renderWeather();
+}
+
+function nextHours(hourly, currentTime) {
+  if (!hourly || !hourly.time) return [];
+  const start = hourly.time.findIndex(t => t > currentTime);
+  if (start < 0) return [];
+  const out = [];
+  for (let i = start; i < hourly.time.length && out.length < 4; i += 2) {
+    out.push({
+      hour: hourly.time[i].slice(11, 13),
+      temp: Math.round(hourly.temperature_2m[i]),
+      code: hourly.weather_code[i],
+      day: hourly.is_day ? hourly.is_day[i] : 1,
+    });
+  }
+  return out;
+}
+
+function renderWeather() {
+  if (cornerMode() === 'music') return;
+  const t = T();
+  const problem = WEATHER.error && WEATHER.temp === null;
+  $('weather').classList.toggle('plain', Boolean(problem));
+  if (problem) {
+    $('wx-icon').innerHTML = wxIcon(3, 1);
+    $('wx-place').textContent = t[{ nocity: 'wxNoCity', notfound: 'wxNotFound', offline: 'wxOffline' }[WEATHER.error]];
+    $('wx-desc').textContent = '';
+    $('wx-hours').innerHTML = '';
+    return;
+  }
+  const text = code => (WX_TEXT[code] || WX_TEXT[3])[CONFIG.lang === 'en' ? 1 : 0];
+  $('wx-icon').innerHTML = wxIcon(WEATHER.code, WEATHER.day);
+  $('wx-temp').textContent = (WEATHER.temp > 0 ? '+' : '') + WEATHER.temp + '°';
+  $('wx-place').textContent = WEATHER.place;
+  $('wx-desc').textContent = `${text(WEATHER.code)}, ${t.wxWind} ${WEATHER.wind} ${t.wxWindUnit}`;
+  $('wx-hours').innerHTML = WEATHER.hours.map(h =>
+    `<div class="wx-h"><span>${h.hour}:00</span>${wxIcon(h.code, h.day)}<b>${h.temp > 0 ? '+' : ''}${h.temp}°</b></div>`).join('');
 }
 
 /* ---------- frosted glass ----------
@@ -418,14 +651,24 @@ function updateGlassMask() {
 
   let d = roundRect(panel.offsetLeft, panel.offsetTop, panel.offsetWidth, panel.offsetHeight, radius(panel));
   // The rail is centred with translateY(-50%), which offsetTop does not include.
-  d += roundRect(rail.offsetLeft, rail.offsetTop - rail.offsetHeight / 2, rail.offsetWidth, rail.offsetHeight,
-    Math.min(radius(rail), rail.offsetWidth / 2));
+  // With the buttons switched off there is no rail, so no frosted patch behind it either.
+  if (CONFIG.buttons) {
+    d += roundRect(rail.offsetLeft, rail.offsetTop - rail.offsetHeight / 2, rail.offsetWidth, rail.offsetHeight,
+      Math.min(radius(rail), rail.offsetWidth / 2));
+  }
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><path d="${d}"/></svg>`;
   const url = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
   const layer = $('glass-blur');
   layer.style.maskImage = url;
   layer.style.webkitMaskImage = url;
+}
+
+function applyButtons() {
+  document.body.classList.toggle('no-buttons', !CONFIG.buttons);
+  if (!CONFIG.buttons) hideHelperCard();
+  renderProfile();
+  updateGlassMask();
 }
 
 /* ---------- helper (glass-dash-helper.exe: launches apps & sends media keys) ---------- */
@@ -435,11 +678,66 @@ async function run(action) {
   try {
     res = await fetch(`${CONFIG.helper}/do/${action}`, { method: 'POST' });
   } catch {
+    helperMissing();
+    return;
+  }
+  hideHelperCard();
+  // 429 means the helper is just throttling a burst of clicks — nothing to report.
+  // 404: the helper is there but has never heard of this button — it is an older one.
+  if (res.status === 404) toast(T().helperOld);
+  else if (!res.ok && res.status !== 429) toast(T().openFailed);
+}
+
+/* ---------- "the buttons need a helper" ----------
+   A wallpaper cannot open a link, so the most it can do is say where to go and put the
+   address on the clipboard when asked. Someone who closes the card twice has made up their
+   mind; after that a press only gets the short toast. */
+const HELPER_URL = 'https://github.com/Yareli0i/glass-dash/releases/latest';
+let cardClosed = 0;
+let cardTimer = 0;
+
+function helperMissing() {
+  if (cardClosed >= 2) {
     toast(T().helperOff);
     return;
   }
-  // 429 means the helper is just throttling a burst of clicks — nothing to report.
-  if (!res.ok && res.status !== 429) toast(T().openFailed);
+  const t = T();
+  $('hc-title').textContent = t.hcTitle;
+  $('hc-why').textContent = t.hcWhy;
+  $('hc-steps').innerHTML = t.hcSteps.map(step => `<li><span>${step}</span></li>`).join('');
+  $('hc-url').textContent = HELPER_URL.replace('https://', '');
+  $('hc-note').textContent = t.hcNote;
+  $('hc-close').setAttribute('aria-label', t.hcClose);
+  const copy = $('hc-copy');
+  copy.textContent = t.hcCopy;
+  copy.className = '';
+  $('helper-card').hidden = false;
+  clearTimeout(cardTimer);
+  cardTimer = setTimeout(hideHelperCard, 45000);
+}
+
+function hideHelperCard() {
+  clearTimeout(cardTimer);
+  $('helper-card').hidden = true;
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch { /* not allowed here; try the old way */ }
+  try {
+    const box = document.createElement('textarea');
+    box.value = text;
+    box.style.cssText = 'position:fixed;opacity:0';
+    document.body.append(box);
+    box.select();
+    const ok = document.execCommand('copy');
+    box.remove();
+    return ok;
+  } catch {
+    return false;
+  }
 }
 
 let toastTimer = 0;
@@ -467,12 +765,49 @@ document.addEventListener('click', e => {
   // the click feels answered (the real state overwrites it when it arrives).
   if (action === 'media-play' && media.title) {
     const mi = window.wallpaperMediaIntegration || { PLAYBACK_PLAYING: 1, PLAYBACK_PAUSED: 2 };
-    media.pos += isPlaying() ? (now - media.stamp) / 1000 : 0;
+    media.pos = position();
     media.state = isPlaying() ? mi.PLAYBACK_PAUSED : mi.PLAYBACK_PLAYING;
+    stateKnown = true;
     media.stamp = now;
     renderPlayer();
   }
   run(action);
+});
+
+/* ---------- lit buttons ----------
+   Wallpaper Engine forwards mouse movement to the page, but the browser's :hover state does
+   not reliably follow it. The pointer position does arrive, so the lit button is worked out
+   from that instead. */
+const LIT = '.rail-btn, .icon-btn, #play-btn, #profile, #hc-copy, #hc-close';
+let hot = null;
+let hotTimer = 0;
+
+function setHot(btn) {
+  if (btn === hot) return;
+  if (hot) hot.classList.remove('hot');
+  hot = btn;
+  if (hot) hot.classList.add('hot');
+}
+
+document.addEventListener('mousemove', e => {
+  setHot(e.target instanceof Element ? e.target.closest(LIT) : null);
+  // Nothing says "the mouse left" when the pointer slides onto a window, and a button would
+  // stay lit for good. Let it go once the pointer has been silent for a while.
+  clearTimeout(hotTimer);
+  hotTimer = setTimeout(() => setHot(null), 6000);
+});
+document.addEventListener('mouseleave', () => setHot(null));
+
+$('hc-copy').addEventListener('click', async () => {
+  const ok = await copyText(HELPER_URL);
+  const copy = $('hc-copy');
+  copy.textContent = ok ? T().hcCopied : T().hcCopyFailed;
+  copy.className = ok ? 'done' : 'failed';
+  $('hc-note').textContent = ok ? T().hcPaste : T().hcType;
+});
+$('hc-close').addEventListener('click', () => {
+  cardClosed++;
+  hideHelperCard();
 });
 
 $('hide-btn').addEventListener('click', () => {
@@ -512,6 +847,13 @@ function demo() {
     dur: 203,
     stamp: performance.now(),
   });
+  // a still forecast, so preview renders never depend on the network
+  if (!CONFIG.city.trim()) {
+    Object.assign(WEATHER, {
+      place: CONFIG.lang === 'en' ? 'Kyiv' : 'Київ', temp: 20, code: 3, day: 1, wind: 3, error: '',
+      hours: [{ hour: '21', temp: 18, code: 3 }, { hour: '23', temp: 16, code: 61 }, { hour: '01', temp: 15, code: 80 }, { hour: '03', temp: 14, code: 3 }],
+    });
+  }
 }
 
 /* ---------- boot ---------- */
@@ -520,10 +862,18 @@ fit();
 renderRail();
 updateGlassMask();
 if (PARAMS.has('bg')) CONFIG.bgPreset = PARAMS.get('bg');
+if (PARAMS.has('corner')) CONFIG.corner = PARAMS.get('corner');
+if (PARAMS.has('city')) CONFIG.city = PARAMS.get('city');
+if (PARAMS.has('lang')) CONFIG.lang = resolveLang(PARAMS.get('lang'));
+if (PARAMS.has('name')) CONFIG.name = PARAMS.get('name');
+if (PARAMS.has('buttons')) CONFIG.buttons = PARAMS.get('buttons') !== '0';
 applyBackground();
 applyAvatar();
 setCharacter('');
 if (DEMO) demo();
+applyCorner();
 renderAll();
+applyButtons();
+if (PARAMS.has('card')) helperMissing();   // preview of the helper card
 tick();
 setInterval(renderProgress, 1000);

@@ -108,12 +108,20 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   color: #fff;
   display: grid; place-items: center;
   box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.45);
-  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  transition: transform .18s ease, box-shadow .24s ease, background .18s ease;
 }
-.rail-btn:hover {
+/* `.hot` is set from the pointer position (see app.js): inside Wallpaper Engine the browser's
+   own :hover is not a thing to rely on. The button fills with the app's colour and lights up
+   in it — a ring close to the edge and a soft halo further out. */
+.rail-btn:hover,
+.rail-btn.hot {
   background: var(--brand, #111);
   transform: scale(1.09);
   box-shadow: 0 12px 26px -6px var(--brand, rgba(0, 0, 0, 0.5));
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--brand, #111) 30%, transparent),
+    0 0 34px 4px color-mix(in srgb, var(--brand, #111) 72%, transparent),
+    0 12px 26px -6px var(--brand, rgba(0, 0, 0, 0.5));
 }
 .rail-btn:active { transform: scale(0.96); }
 .rail-btn svg { width: 29px; height: 29px; }
@@ -222,9 +230,18 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   width: 62px; height: 62px;
   border-radius: 50%;
   display: grid; place-items: center;
-  transition: transform .18s ease;
+  transition: transform .18s ease, box-shadow .24s ease, background .18s ease;
 }
-.icon-btn:hover { transform: scale(1.07); }
+.icon-btn:hover, .icon-btn.hot { transform: scale(1.07); }
+/* the terminal lights up in the accent of its own colour scheme, the same way the rail does */
+.icon-btn.dark:hover,
+.icon-btn.dark.hot {
+  background: var(--brand, #111);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--brand, #111) 30%, transparent),
+    0 0 34px 4px color-mix(in srgb, var(--brand, #111) 72%, transparent),
+    0 12px 26px -6px var(--brand, rgba(0, 0, 0, 0.5));
+}
 .icon-btn.dark { background: #111; color: #fff; box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.45); }
 .icon-btn svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
 
@@ -236,7 +253,20 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   display: flex; align-items: center; gap: 16px;
   font-size: 22px; font-weight: 600;
   box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.3);
+  transition: transform .18s ease, box-shadow .24s ease, background .18s ease;
 }
+/* The chip opens the Documents folder, so it lights up in the yellow of a Windows folder.
+   It keeps its own pale fill: the name has to stay readable, the colour goes into the glow. */
+#profile:hover,
+#profile.hot {
+  transform: scale(1.04);
+  background: color-mix(in srgb, var(--brand, #fff) 22%, rgba(255, 255, 255, 0.86));
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--brand, #fff) 55%, transparent),
+    0 0 30px 3px color-mix(in srgb, var(--brand, #fff) 62%, transparent),
+    0 8px 20px -8px rgba(0, 0, 0, 0.3);
+}
+#profile:active { transform: scale(0.98); }
 
 #avatar {
   width: 48px; height: 48px;
@@ -247,6 +277,7 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   display: grid; place-items: center;
   font-size: 22px; font-weight: 800;
 }
+#avatar svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 #avatar.photo { color: transparent; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9); }
 
 #greeting {
@@ -270,6 +301,8 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
 
 .shot {
   width: 100%; height: 100%;
+  /* without this a photo's own proportions set the grid row's floor and the gallery overflows */
+  min-width: 0; min-height: 0;
   object-fit: cover;
   border-radius: 20px;
   border: 4px solid rgba(255, 255, 255, 0.92);
@@ -277,6 +310,52 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   background: rgba(255, 255, 255, 0.3);
 }
 .shot.big { grid-row: span 2; }
+
+/* weather */
+
+/* Alone it is two rows: the reading on top, the next hours under it. Next to the player it
+   shrinks to a single row. */
+#weather {
+  margin-top: 26px;
+  height: 136px;
+  border-radius: 26px;
+  padding: 14px 24px 14px 20px;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-content: center;
+  align-items: center;
+  gap: 10px 14px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 18px 36px -16px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+/* the big icon holds the whole left edge, so both rows of text share one left margin */
+#wx-icon { grid-row: 1 / 3; align-self: center; width: 74px; height: 74px; }
+#wx-icon svg { width: 100%; height: 100%; }
+#wx-main { min-width: 0; }
+#wx-temp { font-size: 36px; font-weight: 800; letter-spacing: -1.2px; line-height: 1; }
+#wx-place { font-size: 17px; font-weight: 700; line-height: 1.2; }
+#wx-place, #wx-desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#wx-desc { margin-top: 2px; font-size: 14px; font-weight: 600; color: var(--ink-soft); }
+#weather.plain #wx-temp { display: none; }
+#weather.plain #wx-place { font-size: 19px; font-weight: 600; line-height: 1.35; white-space: normal; }
+
+#wx-hours { grid-column: 2 / -1; grid-row: 2; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+#wx-hours:empty { display: none; }
+.wx-h { display: grid; justify-items: center; align-content: center; gap: 1px; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+.wx-h svg { width: 30px; height: 30px; }
+.wx-h b { font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* both widgets share the column, so they shrink and the gallery gives up some height */
+body.corner-both #gallery { height: 232px; }
+body.corner-both #weather { height: 68px; margin-top: 20px; padding: 0 20px 0 12px; }
+body.corner-both #wx-icon { width: 46px; height: 46px; }
+body.corner-both #wx-temp { font-size: 27px; letter-spacing: -.6px; }
+body.corner-both #wx-place { font-size: 15px; }
+body.corner-both #wx-desc { font-size: 13px; }
+body.corner-both #wx-hours { display: none; }
+body.corner-both #player { margin-top: 18px; height: 112px; }
 
 /* music */
 
@@ -313,14 +392,21 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   width: 36px; height: 36px;
   border-radius: 50%;
   display: grid; place-items: center;
-  transition: background .2s ease, transform .15s ease;
+  transition: background .2s ease, transform .15s ease, box-shadow .24s ease;
 }
 #controls button:hover { background: rgba(0, 0, 0, 0.07); }
 #controls button:active { transform: scale(0.92); }
 #controls svg { width: 20px; height: 20px; }
 #controls .fill { fill: currentColor; }
 #controls #play-btn { width: 40px; height: 40px; background: var(--ink); color: #fff; }
-#controls #play-btn:hover { background: #000; }
+/* play takes the colour of whatever is playing: --accent follows the cover of the track */
+#controls #play-btn:hover,
+#controls #play-btn.hot {
+  background: var(--accent);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent),
+    0 0 24px 3px color-mix(in srgb, var(--accent) 72%, transparent);
+}
 #track-time { margin-left: auto; font-size: 14px; font-weight: 600; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 #player.idle #track-time { display: none; }
 
@@ -408,3 +494,67 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   z-index: 20;
 }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- buttons switched off ----------
+   For people who want the dashboard without the helper: nothing that needs it stays on
+   screen, and the name chip goes back to being a label. */
+body.no-buttons #rail,
+body.no-buttons .icon-btn[data-action="terminal"],
+body.no-buttons #controls button { display: none; }
+body.no-buttons #profile { pointer-events: none; cursor: default; }
+
+/* ---------- "the buttons need a helper" ---------- */
+
+#helper-card {
+  position: absolute; left: 50%; top: 50%;
+  width: 760px; padding: 40px 46px 34px;
+  transform: translate(-50%, -50%);
+  border-radius: 36px;
+  background: rgba(18, 18, 24, 0.93);
+  color: #fff;
+  box-shadow: 0 50px 100px -30px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  z-index: 30;
+  animation: rise .4s cubic-bezier(.2, .9, .3, 1) both;
+}
+#helper-card h2 { font-size: 31px; font-weight: 700; letter-spacing: -0.01em; }
+#helper-card p { margin-top: 12px; font-size: 17.5px; line-height: 1.5; color: rgba(255, 255, 255, 0.72); }
+#hc-steps { margin: 22px 0 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 11px; }
+#hc-steps li { counter-increment: step; display: grid; grid-template-columns: 30px 1fr; gap: 14px; align-items: baseline; font-size: 18px; line-height: 1.4; }
+#hc-steps li::before {
+  content: counter(step);
+  width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 15px; font-weight: 700;
+}
+#hc-link {
+  margin-top: 22px; padding: 8px 8px 8px 20px;
+  display: flex; align-items: center; gap: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+}
+/* Typed by hand, this address has a zero that reads as a letter; a face with a slashed zero helps. */
+#hc-url { flex: 1; min-width: 0; font: 600 18.5px/1.2 Consolas, 'Cascadia Mono', 'Courier New', monospace; letter-spacing: 0.01em; white-space: nowrap; }
+#hc-copy {
+  flex: none; padding: 13px 20px;
+  border-radius: 13px;
+  background: var(--accent); color: #fff;
+  font-size: 16px; font-weight: 700;
+  transition: transform .16s ease, box-shadow .2s ease, background .2s ease;
+}
+#hc-copy:hover, #hc-copy.hot {
+  transform: scale(1.04);
+  box-shadow: 0 0 24px 2px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+#hc-copy.done { background: #2fa866; }
+#hc-copy.failed { background: rgba(255, 255, 255, 0.16); }
+#helper-card #hc-note { margin-top: 20px; font-size: 15px; color: rgba(255, 255, 255, 0.5); }
+.hc-x {
+  position: absolute; right: 20px; top: 20px;
+  width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: rgba(255, 255, 255, 0.6);
+  transition: background .16s ease, color .16s ease;
+}
+.hc-x:hover, .hc-x.hot { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.hc-x svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }

@@ -1,29 +1,60 @@
-[h1]Glass Dash[/h1]
-Скляний аніме-дашборд: годинник, календар, музика, Коната, що виходить за скло, і бічна панель-док.
+[h1]Glass Dash — a frosted-glass desktop dashboard[/h1]
+Clock, calendar, weather and now playing behind a sheet of frosted glass, with Konata stepping out of it and a dock for your apps.
 
-[h2]Що вміє[/h2]
+[h2]🔘 The buttons need a tiny helper[/h2]
+Everything on the dashboard works out of the box [b]except the buttons[/b]. Wallpaper Engine does not let wallpapers open programs or control music, so the dock, play / pause / next, the terminal and the Documents button go through [b]Glass Dash Helper[/b]: under 30 KB, no window, open source.
 [list]
-[*] Годинник і календар (українська / English), привітання за часом доби з вашим ім'ям
-[*] Музика з будь-якого плеєра, який бачить Windows (Spotify, браузер…): назва, обкладинка, прогрес, ⏮ ⏯ ⏭
-[*] Матове скло, персонаж, галерея, фон і акцентний колір — у налаштуваннях шпалери
-[*] Бічна панель: Discord, Telegram, Spotify, YouTube, Steam, VS Code — відкриває програму, виводить наперед, згортає
-[*] Аватар: будь-яка картинка або фото вашого акаунта Windows
+[*] [url=https://github.com/Yareli0i/glass-dash/releases/latest/download/glass-dash-helper.zip]Download glass-dash-helper.zip[/url] and unpack it
+[*] Double-click [b]install.cmd[/b] — the helper starts now and with Windows
+[*] That's it: the buttons work right away. [b]uninstall.cmd[/b] removes it
+[/list]
+Don't need the buttons? Turn [b]Buttons[/b] off in the wallpaper settings and the dock, the terminal and the music controls disappear — the rest keeps working.
+
+Windows may warn about an unknown publisher because the file is not signed. The helper listens only on your own PC, answers only this wallpaper and runs only what is listed in its .ini file. Source and details: [url=https://github.com/Yareli0i/glass-dash]github.com/Yareli0i/glass-dash[/url]
+
+[h2]✨ What it does[/h2]
+[list]
+[*] [b]Clock, date and calendar[/b], and a greeting with your name that follows the time of day
+[*] [b]Now playing[/b] from any player Windows sees (Spotify, a browser…): title, artist, cover, progress. The accent colour follows the cover
+[*] [b]Weather[/b] for your city with the next few hours — instead of the player or next to it
+[*] [b]Dock[/b]: Discord, Telegram, Spotify, YouTube, Steam, VS Code. A button opens the app, brings it to the front, or minimizes it if it was already in front. Each one lights up in the app's own colour
+[*] [b]Frosted glass[/b] you can make milkier or clearer, over a built-in meadow, your own picture or a .webm
+[*] [b]Your own character[/b] (any PNG with a transparent background), three gallery photos, avatar and accent colour
+[*] Ukrainian and English
 [/list]
 
-[h2]Кнопки: Glass Dash Helper[/h2]
-Wallpaper Engine не дозволяє HTML-шпалерам запускати програми, тому кнопкам потрібен маленький безкоштовний помічник з відкритим кодом (~20 КБ, без вікна). Без нього працює все, крім кнопок.
-[list]
-[*] [url=https://github.com/Yareli0i/glass-dash/releases/latest]Завантажте glass-dash-helper.zip[/url] і розпакуйте
-[*] Двічі клацніть install.cmd — помічник запуститься й стартуватиме разом з Windows
-[*] Видалення — uninstall.cmd
-[/list]
-Windows може попередити про невідомого видавця: у програми немає цифрового підпису. Код і докладна інструкція: [url=https://github.com/Yareli0i/glass-dash]github.com/Yareli0i/glass-dash[/url]
+[h2]⚙️ Settings[/h2]
+Name, avatar, language, background, character and its size, gallery photos, accent colour, glass milkiness and blur, music / weather / both, city, buttons on / off.
+
+The only thing that leaves your PC is the weather request: the city you typed goes to open-meteo.com. No city, no request.
+
+[i]If you like it, a thumbs up helps other people find it 👍[/i]
 
 [hr][/hr]
 
-[h2]English[/h2]
-A glassy anime dashboard: clock, calendar, now playing, Konata stepping out of the glass and a side dock that opens, focuses and minimizes your apps.
+[h2]🇺🇦 Українською[/h2]
+Годинник, календар, погода й музика за матовим склом, Коната, що виходить із нього, і док для ваших програм.
 
-Everything works out of the box except the buttons. Wallpaper Engine does not let HTML wallpapers launch programs, so the buttons need the tiny open-source Glass Dash Helper: [url=https://github.com/Yareli0i/glass-dash/releases/latest]download glass-dash-helper.zip[/url], unpack it and double-click install.cmd (uninstall.cmd removes it). Source and details: [url=https://github.com/Yareli0i/glass-dash]github.com/Yareli0i/glass-dash[/url]
+[b]Кнопкам потрібен маленький помічник.[/b] Усе на дашборді працює одразу, [b]крім кнопок[/b]. Wallpaper Engine не дозволяє шпалерам запускати програми й керувати музикою, тому док, ⏮ ⏯ ⏭, термінал і кнопка «Документи» працюють через [b]Glass Dash Helper[/b]: менше 30 КБ, без вікна, з відкритим кодом.
+[list]
+[*] [url=https://github.com/Yareli0i/glass-dash/releases/latest/download/glass-dash-helper.zip]Завантажте glass-dash-helper.zip[/url] і розпакуйте
+[*] Двічі клацніть [b]install.cmd[/b] — помічник запуститься й стартуватиме разом з Windows
+[*] Кнопки запрацюють одразу. Видалення — [b]uninstall.cmd[/b]
+[/list]
+Кнопки не потрібні? Вимкніть [b]«Кнопки»[/b] в налаштуваннях шпалери — док, термінал і керування музикою зникнуть, решта працюватиме як і раніше.
+
+Windows може попередити про невідомого видавця: у файла немає цифрового підпису. Помічник слухає лише ваш власний ПК, відповідає лише цій шпалері й запускає тільки те, що записано в його .ini.
+
+[b]Що вміє:[/b]
+[list]
+[*] Годинник, дата, календар і привітання з вашим ім'ям за часом доби
+[*] Музика з будь-якого плеєра, який бачить Windows: назва, виконавець, обкладинка, прогрес; акцентний колір підлаштовується під обкладинку
+[*] Погода для вашого міста на найближчі години — замість плеєра або поруч із ним
+[*] Док: Discord, Telegram, Spotify, YouTube, Steam, VS Code — відкриває програму, виводить наперед, згортає; кожна кнопка світиться кольором своєї програми
+[*] Матове скло, власний фон (картинка або .webm), персонаж, галерея, аватар, акцентний колір
+[/list]
+За межі ПК іде лише запит погоди: назва вашого міста — на open-meteo.com.
+
+Код і баг-репорти: [url=https://github.com/Yareli0i/glass-dash]GitHub[/url].
 
 [i]Konata Izumi / Lucky Star © Kagami Yoshimizu / Kadokawa. Unofficial fan work.[/i]

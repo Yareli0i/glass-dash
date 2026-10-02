@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="uk">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
 
 <div id="bg"><img src="assets/bg/meadow-haze.jpg" alt=""></div>
 
-<button id="hide-btn" class="corner-btn" aria-label="Сховати дашборд">
+<button id="hide-btn" class="corner-btn" aria-label="Hide dashboard">
   <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
 </button>
 
@@ -18,7 +18,7 @@
 
   <div id="glass-blur" aria-hidden="true"></div>
 
-  <nav id="rail" class="glass" aria-label="Швидкий запуск"></nav>
+  <nav id="rail" class="glass" aria-label="Quick launch"></nav>
 
   <section id="panel" class="glass">
     <div class="col-left">
@@ -35,13 +35,13 @@
 
     <div class="col-right">
       <div class="top-row">
-        <button class="icon-btn dark" data-action="terminal" aria-label="Термінал">
+        <button class="icon-btn dark" data-action="terminal" aria-label="Terminal" style="--brand:#5B7DB1">
           <svg viewBox="0 0 24 24"><path d="M5 8l4 4-4 4M12 16h7"/></svg>
         </button>
-        <div id="profile">
+        <button id="profile" data-action="documents" aria-label="Documents" style="--brand:#FFC83D">
           <span id="profile-name"></span>
           <span id="avatar"></span>
-        </div>
+        </button>
       </div>
 
       <h1 id="greeting"></h1>
@@ -52,15 +52,25 @@
         <img class="shot" src="assets/gallery/3.jpg" alt="">
       </div>
 
+      <div id="weather" hidden>
+        <div id="wx-icon"></div>
+        <div id="wx-temp"></div>
+        <div id="wx-main">
+          <div id="wx-place"></div>
+          <div id="wx-desc"></div>
+        </div>
+        <div id="wx-hours"></div>
+      </div>
+
       <div id="player" class="idle">
         <div id="cover"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/></svg></div>
         <div id="track">
           <div id="track-title"></div>
           <div id="track-artist"></div>
           <div id="controls">
-            <button data-action="media-prev" aria-label="Попередній"><svg viewBox="0 0 24 24"><path class="fill" d="M7 6h2v12H7zM19 6v12l-9-6z"/></svg></button>
-            <button data-action="media-play" id="play-btn" aria-label="Пуск / пауза"><svg viewBox="0 0 24 24"><path class="fill" id="play-icon" d="M8 5.5v13l10.5-6.5z"/></svg></button>
-            <button data-action="media-next" aria-label="Наступний"><svg viewBox="0 0 24 24"><path class="fill" d="M15 6h2v12h-2zM5 6v12l9-6z"/></svg></button>
+            <button data-action="media-prev" aria-label="Previous"><svg viewBox="0 0 24 24"><path class="fill" d="M7 6h2v12H7zM19 6v12l-9-6z"/></svg></button>
+            <button data-action="media-play" id="play-btn" aria-label="Play / pause"><svg viewBox="0 0 24 24"><path class="fill" id="play-icon" d="M8 5.5v13l10.5-6.5z"/></svg></button>
+            <button data-action="media-next" aria-label="Next"><svg viewBox="0 0 24 24"><path class="fill" d="M15 6h2v12h-2zM5 6v12l9-6z"/></svg></button>
             <span id="track-time"></span>
           </div>
         </div>
@@ -76,6 +86,20 @@
       <text x="200" y="470">character.png</text>
     </svg>
   </div>
+
+  <!-- Shown when a button is pressed and the helper is not there. Most people subscribe from
+       inside Wallpaper Engine and never see the Workshop page, so the wallpaper explains itself. -->
+  <aside id="helper-card" role="dialog" aria-labelledby="hc-title" hidden>
+    <button id="hc-close" class="hc-x"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <h2 id="hc-title"></h2>
+    <p id="hc-why"></p>
+    <ol id="hc-steps"></ol>
+    <div id="hc-link">
+      <code id="hc-url"></code>
+      <button id="hc-copy"></button>
+    </div>
+    <p id="hc-note"></p>
+  </aside>
 
 </main>
 
