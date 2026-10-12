@@ -7,6 +7,7 @@ const CONFIG = {
   name: '',
   lang: 'en',
   jpName: '泉 こなた',
+  jpDir: 'vertical',   // vertical | upright | horizontal
   bgPreset: 'meadow-haze',
   blur: 2,
   helper: 'http://127.0.0.1:47831',
@@ -200,7 +201,11 @@ window.wallpaperPropertyListener = {
     }
     if (p.language) CONFIG.lang = resolveLang(p.language.value);
     if (p.jpname) CONFIG.jpName = p.jpname.value;
+    if (p.jpdir) CONFIG.jpDir = p.jpdir.value;
     if (p.accent) root.setProperty('--accent', weColor(p.accent.value));
+    if (p.clockcolor) root.setProperty('--clock', weColor(p.clockcolor.value));
+    if (p.calcolor) root.setProperty('--cal-bg', weColor(p.calcolor.value));
+    if (p.caltext) root.setProperty('--cal-ink', weColor(p.caltext.value));
     if (p.glassopacity) root.setProperty('--glass-alpha', p.glassopacity.value / 100);
     if (p.glassblur) CONFIG.blur = p.glassblur.value;
     if (p.charsize) root.setProperty('--char-h', p.charsize.value + 'px');
@@ -305,9 +310,11 @@ function renderProfile() {
   $('profile').setAttribute('aria-label', T().documents);
   if (CONFIG.name) $('avatar').textContent = CONFIG.name.charAt(0).toUpperCase();
   else $('avatar').innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.6"/><path d="M5 19.5c1.2-3.4 4-5 7-5s5.800 1.600 7 5"/></svg>';
-  // The vertical caption names the character, so it only shows when there is one.
+  // The caption names the character, so it only shows when there is one.
   const jp = $('jp-name');
   jp.textContent = CONFIG.jpName;
+  document.body.classList.toggle('jp-upright', CONFIG.jpDir === 'upright');
+  document.body.classList.toggle('jp-horizontal', CONFIG.jpDir === 'horizontal');
   jp.hidden = !CONFIG.jpName.trim() || !(hasCharacter || DEMO);
 }
 
@@ -866,6 +873,12 @@ if (PARAMS.has('corner')) CONFIG.corner = PARAMS.get('corner');
 if (PARAMS.has('city')) CONFIG.city = PARAMS.get('city');
 if (PARAMS.has('lang')) CONFIG.lang = resolveLang(PARAMS.get('lang'));
 if (PARAMS.has('name')) CONFIG.name = PARAMS.get('name');
+if (PARAMS.has('jp')) CONFIG.jpName = PARAMS.get('jp');
+if (PARAMS.has('jpdir')) CONFIG.jpDir = PARAMS.get('jpdir');
+// index.html?clock=e84a5f&calbg=fff&caltext=222 — preview the colour settings
+for (const [param, name] of [['clock', '--clock'], ['calbg', '--cal-bg'], ['caltext', '--cal-ink']]) {
+  if (PARAMS.has(param)) document.documentElement.style.setProperty(name, '#' + PARAMS.get(param));
+}
 if (PARAMS.has('buttons')) CONFIG.buttons = PARAMS.get('buttons') !== '0';
 applyBackground();
 applyAvatar();

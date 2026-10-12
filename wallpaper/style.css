@@ -11,6 +11,10 @@
   --char-top: 38px;
   --ink: #141418;
   --ink-soft: #45454f;
+  /* user colours: the clock (with its date and the caption) and the two halves of the calendar */
+  --clock: #141418;
+  --cal-bg: #141418;
+  --cal-ink: #fff;
   --accent: #5e90e4;
   --ui: 'Segoe UI Variable Display', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
   --jp: 'Yu Gothic UI', 'Yu Gothic', 'Meiryo', sans-serif;
@@ -149,7 +153,7 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   font-size: 116px;
   line-height: .9;
   letter-spacing: -3px;
-  color: var(--ink);
+  color: var(--clock);
   white-space: nowrap;
 }
 #clock .colon { display: inline-block; margin: 0 -4px; animation: breathe 2s ease-in-out infinite; }
@@ -159,7 +163,8 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   margin-top: 16px;
   font-size: 27px;
   font-weight: 600;
-  color: var(--ink-soft);
+  /* the date is the clock's quieter second line, whatever colour the clock is */
+  color: color-mix(in srgb, var(--clock) 76%, transparent);
 }
 
 /* calendar */
@@ -170,8 +175,8 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   display: flex; flex-direction: column;
   border-radius: 34px;
   padding: 32px 26px 24px;
-  background: rgba(20, 20, 24, 0.84);
-  color: #fff;
+  background: color-mix(in srgb, var(--cal-bg) 84%, transparent);
+  color: var(--cal-ink);
   box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
@@ -196,20 +201,20 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   text-align: center;
   font-size: 17px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.42);
+  color: color-mix(in srgb, var(--cal-ink) 42%, transparent);
 }
 
 #cal-grid .day { height: 46px; display: grid; place-items: center; font-size: 21px; font-weight: 600; }
-#cal-grid .day.weekend { color: rgba(255, 255, 255, 0.62); }
+#cal-grid .day.weekend { color: color-mix(in srgb, var(--cal-ink) 62%, transparent); }
 #cal-grid .day span { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; }
 #cal-grid .day.today span {
-  background: #fff;
-  color: #111;
+  background: var(--cal-ink);
+  color: var(--cal-bg);
   font-weight: 800;
-  box-shadow: 0 6px 16px -4px rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 16px -4px color-mix(in srgb, var(--cal-ink) 35%, transparent);
 }
 
-/* vertical japanese caption */
+/* the caption next to the character: vertical by default, as Japanese is set */
 
 #jp-name {
   position: absolute;
@@ -219,7 +224,17 @@ body.no-blur .glass { background: rgba(255, 255, 255, calc(var(--glass-alpha) + 
   font-weight: 700;
   font-size: 36px;
   letter-spacing: .14em;
-  color: var(--ink);
+  color: var(--clock);
+}
+/* Latin letters lie on their side in a vertical line; this stands them up one under another. */
+body.jp-upright #jp-name { text-orientation: upright; letter-spacing: .02em; }
+/* Laid flat it would run into the character, so it moves to the free strip above the clock. */
+body.jp-horizontal #jp-name {
+  writing-mode: horizontal-tb;
+  left: 137px; top: 24px;
+  font-size: 30px;
+  letter-spacing: .1em;
+  white-space: nowrap;
 }
 
 /* right column */
